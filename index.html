@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.161.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.161.0/examples/jsm/"}}</script>
 </head>
 <body>
 
@@ -51,16 +50,13 @@
     </div>
     <div class="hero__art reveal">
       <div class="hero__card">
-        <div class="viewer" id="viewer">
-          <img src="assets/teeth.webp" width="1536" height="1024" alt="Mukammal tabassum: 3D tishlar modeli" draggable="false">
-        </div>
-        <div class="viewer__bar" id="viewerBar" hidden>
-          <span class="viewer__hint">Bosing: og'iz ochiladi · Sudrang: aylantiring</span>
-          <div class="viewer__tools" id="viewerTools">
-            <button type="button" id="vZoomIn" aria-label="Kattalashtirish">+</button>
-            <button type="button" id="vZoomOut" aria-label="Kichraytirish">−</button>
-            <button type="button" id="vReset" aria-label="Qayta markazlash">⟲</button>
-          </div>
+        <div class="hero3d" id="hero3d">
+          <img class="hero3d__fallback" src="assets/teeth.webp" width="1536" height="1024" alt="Mukammal tabassum: tishlar modeli">
+          <model-viewer src="assets/dental-arch.glb" alt="Odam tishlari va milki 3D modeli" poster="assets/teeth.webp"
+            camera-controls auto-rotate auto-rotate-delay="1200" rotation-per-second="14deg"
+            camera-orbit="0deg 80deg 108%" min-camera-orbit="auto auto 55%" max-camera-orbit="auto auto 180%"
+            shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05" tone-mapping="commerce"
+            interaction-prompt="none" environment-image="neutral" reveal="auto"></model-viewer>
         </div>
       </div>
     </div>
@@ -288,12 +284,10 @@
   <div class="wrap foot__in">
     <span class="logo__text">aesthetic<i>_</i>stomatology</span>
     <span>© <span id="yr"></span> Barcha huquqlar himoyalangan</span>
-    <small id="modelCredit" hidden></small>
   </div>
 </footer>
 
 <script src="script.js"></script>
-<script type="module" src="viewer.js"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <script src="model3d.js" defer></script>
 </body>

@@ -1,5 +1,9 @@
 /* "3D ko'rik" bo'limi: <model-viewer> boshqaruvi */
 (function () {
+  // hero: komponent yuklansa, zaxira rasm yashiriladi
+  const hero = document.getElementById("hero3d");
+  if (hero && window.customElements) customElements.whenDefined("model-viewer").then(() => hero.classList.add("is-ready"));
+
   const mv = document.getElementById("mv");
   if (!mv) return;
   const stage = mv.parentElement;
