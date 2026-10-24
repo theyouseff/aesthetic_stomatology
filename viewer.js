@@ -7,8 +7,11 @@ const MODEL_URL = "assets/dental-arch.glb";
 const MODEL_ROT_Y = 0;          // model "oldi" +Z ga qaramasa, aylantirish (radian), masalan -Math.PI / 2
 const MODEL_ROT_X = 0;          // model "tepa" +Y bo'lmasa (masalan Z-up model uchun -Math.PI / 2)
 const BITE_FRACTION = 0.5;      // yuqori va pastki tishlar tutashgan balandlik (modelning balandligidan ulushi)
-const OPEN_ANGLE = 0.42;        // og'iz maksimal ochilish burchagi (radian)
-const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (sayt pastiga qo'yiladi)
+const OPEN_ANGLE = 0.5;         // og'iz maksimal ochilish burchagi (radian)
+const CREDIT_HTML =            // CC BY talabi: muallif, litsenziya va o'zgarishlar ko'rsatiladi
+  '3D model: <a href="https://sketchfab.com/3d-models/human-teeth-c4c569f0e08948e2a572007a7a5726f2" target="_blank" rel="noopener">"Human teeth"</a> muallifi ' +
+  '<a href="https://sketchfab.com/Dessen" target="_blank" rel="noopener">Alexander Antipov</a>, ' +
+  '<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. O\'zgartirilgan: formati va teksturalari siqilgan, og\'iz ochish animatsiyasi qo\'shilgan.';
 
 (async () => {
   const host = document.getElementById("viewer");
@@ -69,21 +72,59 @@ const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (say
     const biteY = box.min.y + size.y * BITE_FRACTION;
     const s = 6 / Math.max(size.x, size.y, size.z);
     meshes.forEach((m) => m.geometry.translate(-center.x, -biteY, -center.z));
+
+    // har bir bog'langan bo'lak (tish, milk) qaysi jag'ga tegishli ekanini aniqlaymiz: markazi tutashuv tekisligidan yuqori bo'lsa, yuqori jag'.
+    // Shunda tishlar cho'zilmaydi, jag' bir butun jism sifatida buriladi.
+    meshes.forEach((m) => {
+      const g = m.geometry, pos = g.attributes.position, n = pos.count;
+      const idx = g.index ? g.index.array : Uint32Array.from({ length: n }, (_, i) => i);
+      const key = new Map(), grp = new Int32Array(n);
+      for (let i = 0; i < n; i++) {
+        const k = Math.round(pos.getX(i) * 1e4) + "," + Math.round(pos.getY(i) * 1e4) + "," + Math.round(pos.getZ(i) * 1e4);
+        if (!key.has(k)) key.set(k, key.size);
+        grp[i] = key.get(k);
+      }
+      const parent = Int32Array.from({ length: key.size }, (_, i) => i);
+      const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+      for (let t = 0; t < idx.length; t += 3) {
+        const a = find(grp[idx[t]]), b = find(grp[idx[t + 1]]), c = find(grp[idx[t + 2]]);
+        parent[b] = a; parent[c] = a;
+      }
+      const sum = new Map();
+      for (let i = 0; i < n; i++) {
+        const r = find(grp[i]), e = sum.get(r) || [0, 0];
+        e[0] += pos.getY(i); e[1]++; sum.set(r, e);
+      }
+      const jaw = new Float32Array(n);
+      let biggest = 0;
+      const cnt = new Map();
+      for (let i = 0; i < n; i++) { const r = find(grp[i]); cnt.set(r, (cnt.get(r) || 0) + 1); }
+      cnt.forEach((c) => (biggest = Math.max(biggest, c)));
+      if (biggest > n * 0.6) {
+        // milk kabi yaxlit yuza: tutashuv tekisligi atrofida silliq o'tish (yumshoq to'qima cho'ziladi)
+        const band = size.y * 0.14;
+        for (let i = 0; i < n; i++) {
+          const t = Math.min(Math.max((pos.getY(i) + band) / (2 * band), 0), 1);
+          jaw[i] = t * t * (3 - 2 * t);
+        }
+      } else {
+        for (let i = 0; i < n; i++) { const e = sum.get(find(grp[i])); jaw[i] = e[0] / e[1] > 0 ? 1 : 0; }
+      }
+      g.setAttribute("aJaw", new THREE.BufferAttribute(jaw, 1));
+    });
     model.scale.setScalar(s);
     scene.add(model);
 
-    const depth = size.z * s, height = size.y * s;
+    const depth = size.z * s, height = size.y * s, width = size.x * s;
     const uni = {
       uOpen: { value: 0 },
       uHinge: { value: new THREE.Vector3(0, 0, -depth * 0.42 / s) },
-      uBand: { value: (size.y * 0.035) },
       uMax: { value: OPEN_ANGLE },
     };
 
     // pastki va yuqori jag' hinge atrofida aylanadi (jag'larni alohida bo'laklarga ajratish shart emas)
     const rot = `
-      float w = smoothstep(-uBand, uBand, position.y);
-      float ang = mix(0.62, -0.38, w) * uOpen * uMax;
+      float ang = mix(0.62, -0.38, aJaw) * uOpen * uMax;
       float sa = sin(ang), ca = cos(ang);
     `;
     meshes.forEach((m) => {
@@ -92,7 +133,7 @@ const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (say
         mat.onBeforeCompile = (sh) => {
           Object.assign(sh.uniforms, uni);
           sh.vertexShader = sh.vertexShader
-            .replace("#include <common>", "#include <common>\nuniform float uOpen; uniform vec3 uHinge; uniform float uBand; uniform float uMax;")
+            .replace("#include <common>", "#include <common>\nattribute float aJaw; uniform float uOpen; uniform vec3 uHinge; uniform float uMax;")
             .replace("#include <beginnormal_vertex>", `#include <beginnormal_vertex>
               ${rot}
               objectNormal = vec3(objectNormal.x, objectNormal.y * ca - objectNormal.z * sa, objectNormal.y * sa + objectNormal.z * ca);`)
@@ -113,13 +154,15 @@ const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (say
     orbit.enableDamping = true; orbit.dampingFactor = 0.07; orbit.enablePan = false;
     orbit.rotateSpeed = 0.9; orbit.zoomSpeed = 0.9;
     orbit.minPolarAngle = 0; orbit.maxPolarAngle = Math.PI;           // 360° to'liq aylanish
-    orbit.minDistance = Math.max(depth, height) * 0.9;
-    orbit.maxDistance = Math.max(depth, height) * 3.2;
+    const radius = Math.max(width, height, depth);
+    orbit.minDistance = radius * 0.7;
+    orbit.maxDistance = radius * 3;
     orbit.target.set(0, 0, 0);
 
     const home = () => {
-      const fit = (Math.max(height * 1.7, depth * 1.05) / 2) / Math.tan((camera.fov * Math.PI) / 360);
-      camera.position.set(0, height * 0.12, fit * 1.35);
+      const t = Math.tan((camera.fov * Math.PI) / 360);
+      const fit = Math.max((height * 1.5) / 2 / t, (width * 1.2) / 2 / (t * camera.aspect)) + depth / 2;
+      camera.position.set(0, height * 0.12, fit);
       orbit.target.set(0, 0, 0);
       orbit.update();
     };
@@ -132,6 +175,9 @@ const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (say
     };
     new ResizeObserver(resize).observe(host);
     resize(); home();
+    let moved = false;
+    orbit.addEventListener("start", () => (moved = true));
+    new ResizeObserver(() => { if (!moved) home(); }).observe(host);
 
     // tayyor: rasm o'rniga 3D, boshqaruv tugmalari paydo bo'ladi
     host.classList.add("is-3d", "is-open");
