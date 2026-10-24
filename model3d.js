@@ -14,6 +14,18 @@
   );
 
   const mv = document.getElementById("mv");
+
+  // index.html fayldan (file://) ochilsa, modellar sahifa ichiga joylangan nusxadan olinadi
+  if (location.protocol === "file:") {
+    const s = document.createElement("script");
+    s.src = "assets/models-data.js";
+    s.onload = () => {
+      if (heroMv) heroMv.src = window.DENTAL_MODELS.hero;
+      if (mv) mv.src = window.DENTAL_MODELS.arch;
+    };
+    document.head.appendChild(s);
+  }
+
   if (!mv) return;
   const stage = mv.parentElement;
   const warn = document.getElementById("mvWarn");
@@ -56,4 +68,5 @@
   natural.onclick = () => profile("natural");
   pearl.onclick = () => profile("pearl");
   mv.addEventListener("error", () => { warn.hidden = false; });
+  mv.addEventListener("load", () => { warn.hidden = true; });
 })();
