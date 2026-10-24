@@ -90,18 +90,6 @@ const CASES = [
 ];
 
 /* hero */
-/* 3D tishlar: sichqoncha bilan biroz buriladi */
-(function () {
-  const card = document.querySelector(".hero__card");
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  card.addEventListener("pointermove", (e) => {
-    const r = card.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-    card.style.transform = `perspective(900px) rotateY(${(px - 0.5) * 22}deg) rotateX(${(0.5 - py) * 16}deg)`;
-  });
-  card.addEventListener("pointerleave", () => (card.style.transform = ""));
-})();
-
 /* ---------- oldin / keyin ---------- */
 const baBefore = document.getElementById("baBefore");
 const baAfter = document.getElementById("baAfter");

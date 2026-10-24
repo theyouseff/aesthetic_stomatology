@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.161.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.161.0/examples/jsm/"}}</script>
 </head>
 <body>
 
@@ -49,8 +50,16 @@
     </div>
     <div class="hero__art reveal">
       <div class="hero__card">
-        <div class="teeth3d" id="teeth3d">
+        <div class="viewer" id="viewer">
           <img src="assets/teeth.webp" width="1536" height="1024" alt="Mukammal tabassum: 3D tishlar modeli" draggable="false">
+        </div>
+        <div class="viewer__bar" id="viewerBar" hidden>
+          <button class="btn btn--sm" id="viewerToggle" type="button">3D maketni ochish</button>
+          <div class="viewer__tools" id="viewerTools" hidden>
+            <button type="button" id="vZoomIn" aria-label="Kattalashtirish">+</button>
+            <button type="button" id="vZoomOut" aria-label="Kichraytirish">−</button>
+            <button type="button" id="vReset" aria-label="Qayta markazlash">⟲</button>
+          </div>
         </div>
       </div>
     </div>
@@ -248,5 +257,6 @@
 </footer>
 
 <script src="script.js"></script>
+<script type="module" src="viewer.js"></script>
 </body>
 </html>
