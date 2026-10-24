@@ -211,3 +211,6 @@ em{font-style:italic;color:var(--gold)}
 .viewer__tools{display:flex;gap:8px}
 .viewer__tools button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:1.15rem;line-height:1;transition:.2s}
 .viewer__tools button:hover{border-color:var(--teal);color:var(--teal)}
+.viewer__hint{font-size:.8rem;color:var(--muted)}
+#modelCredit{flex-basis:100%;font-size:.72rem;opacity:.7}
+#modelCredit a{text-decoration:underline}

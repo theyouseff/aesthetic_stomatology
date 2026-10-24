@@ -54,8 +54,8 @@
           <img src="assets/teeth.webp" width="1536" height="1024" alt="Mukammal tabassum: 3D tishlar modeli" draggable="false">
         </div>
         <div class="viewer__bar" id="viewerBar" hidden>
-          <button class="btn btn--sm" id="viewerToggle" type="button">3D maketni ochish</button>
-          <div class="viewer__tools" id="viewerTools" hidden>
+          <span class="viewer__hint">Bosing: og'iz ochiladi · Sudrang: aylantiring</span>
+          <div class="viewer__tools" id="viewerTools">
             <button type="button" id="vZoomIn" aria-label="Kattalashtirish">+</button>
             <button type="button" id="vZoomOut" aria-label="Kichraytirish">−</button>
             <button type="button" id="vReset" aria-label="Qayta markazlash">⟲</button>
@@ -253,6 +253,7 @@
   <div class="wrap foot__in">
     <span class="logo__text">aesthetic<i>_</i>stomatology</span>
     <span>© <span id="yr"></span> Barcha huquqlar himoyalangan</span>
+    <small id="modelCredit" hidden></small>
   </div>
 </footer>
 

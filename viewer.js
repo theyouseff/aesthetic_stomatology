@@ -1,99 +1,128 @@
-/* 3D tishlar: foto egilgan "yoy" shaklidagi yuzaga kiydiriladi, yuqori va pastki qator alohida ochiladi.
-   Three.js yuklanmasa, WebGL yo'q bo'lsa yoki rasm o'qilmasa, tugma chiqmaydi va oddiy rasm qoladi. */
+/* Hero'dagi 3D tishlar: haqiqiy GLB/GLTF dental model ko'rsatiladi.
+   Model fayli bo'lmasa yoki yuklanmasa, hech narsa o'zgarmaydi: oddiy rasm qoladi va boshqaruv tugmalari chiqmaydi.
 
-const IMG = "assets/teeth.webp";
-const BITE = 0.52;      // rasmdagi tishlar tutashgan chiziq (yuqoridan, 0..1)
-const W = 6, H = W / 1.5, R = 5, GAP = 0.34;
+   Modelni almashtirish: faylni assets/ ga qo'ying va quyidagi sozlamalarni moslang. */
+
+const MODEL_URL = "assets/dental-arch.glb";
+const MODEL_ROT_Y = 0;          // model "oldi" +Z ga qaramasa, aylantirish (radian), masalan -Math.PI / 2
+const MODEL_ROT_X = 0;          // model "tepa" +Y bo'lmasa (masalan Z-up model uchun -Math.PI / 2)
+const BITE_FRACTION = 0.5;      // yuqori va pastki tishlar tutashgan balandlik (modelning balandligidan ulushi)
+const OPEN_ANGLE = 0.42;        // og'iz maksimal ochilish burchagi (radian)
+const CREDIT_HTML = "";         // CC BY modellar uchun muallif ko'rsatmasi (sayt pastiga qo'yiladi)
 
 (async () => {
   const host = document.getElementById("viewer");
   const bar = document.getElementById("viewerBar");
   if (!host || !bar) return;
 
+  // fayl yo'q bo'lsa jim qolamiz
+  try {
+    const head = await fetch(MODEL_URL, { method: "HEAD" });
+    if (!head.ok) return;
+  } catch { return; }
+
   try {
     const THREE = await import("three");
     const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
+    const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
+    const { RoomEnvironment } = await import("three/addons/environments/RoomEnvironment.js");
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    const tex = await new THREE.TextureLoader().loadAsync(IMG);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(30, 1.5, 0.1, 100);
-    const HOME = new THREE.Vector3(0, 0.15, 8.6);
-    camera.position.copy(HOME);
-
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xd9b8b0, 1.6));
-    const key = new THREE.DirectionalLight(0xffffff, 1.4);
-    key.position.set(3, 5, 7);
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    const key = new THREE.DirectionalLight(0xffffff, 1.6);
+    key.position.set(3, 6, 8);
     scene.add(key);
 
-    // tekis yuzani yoy bo'ylab egish
-    const bend = (geo) => {
-      const p = geo.attributes.position;
-      for (let i = 0; i < p.count; i++) {
-        const x = p.getX(i);
-        p.setX(i, R * Math.sin(x / R));
-        p.setZ(i, -R * (1 - Math.cos(x / R)));
-      }
-      geo.computeVertexNormals();
-      return geo;
-    };
+    const camera = new THREE.PerspectiveCamera(30, 1.5, 0.1, 200);
 
-    const half = (h, repeatY, offsetY) => {
-      const t = tex.clone();
-      t.needsUpdate = true;
-      t.repeat.set(1, repeatY);
-      t.offset.set(0, offsetY);
-      const mat = new THREE.MeshStandardMaterial({
-        map: t, emissiveMap: t, emissive: 0xffffff, emissiveIntensity: 0.55,
-        roughness: 0.35, metalness: 0, transparent: true, alphaTest: 0.04, side: THREE.DoubleSide,
-      });
-      return new THREE.Mesh(bend(new THREE.PlaneGeometry(W, h, 64, 1)), mat);
-    };
+    // modelni yuklash
+    const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
+    const root = gltf.scene;
+    root.updateMatrixWorld(true);
 
-    const hu = H * BITE, hl = H * (1 - BITE);
-    const upper = new THREE.Group(), lower = new THREE.Group();
-    const upMesh = half(hu, BITE, 1 - BITE); upMesh.position.y = hu / 2; upper.add(upMesh);
-    const loMesh = half(hl, 1 - BITE, 0); loMesh.position.y = -hl / 2; lower.add(loMesh);
-
-    // ochilganda ko'rinadigan og'iz ichi
-    const mc = document.createElement("canvas");
-    mc.width = 512; mc.height = 128;
-    const g = mc.getContext("2d");
-    const grad = g.createLinearGradient(0, 0, 0, 128);
-    grad.addColorStop(0, "#2e0e13"); grad.addColorStop(0.5, "#5b1f26"); grad.addColorStop(1, "#2e0e13");
-    g.fillStyle = grad;
-    g.beginPath(); g.roundRect(0, 0, 512, 128, 64); g.fill();
-    const mouthTex = new THREE.CanvasTexture(mc);
-    mouthTex.colorSpace = THREE.SRGBColorSpace;
-    const mouth = new THREE.Mesh(
-      bend(new THREE.PlaneGeometry(W * 0.9, 1, 48, 1)),
-      new THREE.MeshBasicMaterial({ map: mouthTex, transparent: true, side: THREE.DoubleSide })
-    );
-    mouth.position.z = -0.5;
-    mouth.scale.y = 0.0001;
-
+    // hamma mesh'ni bitta toza koordinatalar tizimiga o'tkazamiz: tepa = +Y, old = +Z, tutashgan tekislik y = 0
+    const orient = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(MODEL_ROT_X, MODEL_ROT_Y, 0));
+    const meshes = [];
+    root.traverse((o) => {
+      if (!o.isMesh) return;
+      o.geometry = o.geometry.clone();
+      o.geometry.applyMatrix4(o.matrixWorld);
+      o.geometry.applyMatrix4(orient);
+      o.position.set(0, 0, 0); o.rotation.set(0, 0, 0); o.scale.set(1, 1, 1);
+      o.updateMatrix();
+      o.frustumCulled = false;
+      meshes.push(o);
+    });
     const model = new THREE.Group();
-    model.add(mouth, upper, lower);
-    model.position.y = 0.05;
+    meshes.forEach((m) => { m.removeFromParent(); model.add(m); });
+
+    const box = new THREE.Box3();
+    meshes.forEach((m) => { m.geometry.computeBoundingBox(); box.union(m.geometry.boundingBox); });
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const biteY = box.min.y + size.y * BITE_FRACTION;
+    const s = 6 / Math.max(size.x, size.y, size.z);
+    meshes.forEach((m) => m.geometry.translate(-center.x, -biteY, -center.z));
+    model.scale.setScalar(s);
     scene.add(model);
+
+    const depth = size.z * s, height = size.y * s;
+    const uni = {
+      uOpen: { value: 0 },
+      uHinge: { value: new THREE.Vector3(0, 0, -depth * 0.42 / s) },
+      uBand: { value: (size.y * 0.035) },
+      uMax: { value: OPEN_ANGLE },
+    };
+
+    // pastki va yuqori jag' hinge atrofida aylanadi (jag'larni alohida bo'laklarga ajratish shart emas)
+    const rot = `
+      float w = smoothstep(-uBand, uBand, position.y);
+      float ang = mix(0.62, -0.38, w) * uOpen * uMax;
+      float sa = sin(ang), ca = cos(ang);
+    `;
+    meshes.forEach((m) => {
+      const mats = Array.isArray(m.material) ? m.material : [m.material];
+      mats.forEach((mat) => {
+        mat.onBeforeCompile = (sh) => {
+          Object.assign(sh.uniforms, uni);
+          sh.vertexShader = sh.vertexShader
+            .replace("#include <common>", "#include <common>\nuniform float uOpen; uniform vec3 uHinge; uniform float uBand; uniform float uMax;")
+            .replace("#include <beginnormal_vertex>", `#include <beginnormal_vertex>
+              ${rot}
+              objectNormal = vec3(objectNormal.x, objectNormal.y * ca - objectNormal.z * sa, objectNormal.y * sa + objectNormal.z * ca);`)
+            .replace("#include <begin_vertex>", `#include <begin_vertex>
+              { vec3 p = position - uHinge;
+                transformed = vec3(p.x, p.y * ca - p.z * sa, p.y * sa + p.z * ca) + uHinge; }`);
+        };
+        mat.customProgramCacheKey = () => "jawopen";
+        mat.needsUpdate = true;
+        if (mat.isMeshStandardMaterial) mat.envMapIntensity = 1.1;
+      });
+    });
 
     const canvas = renderer.domElement;
     host.appendChild(canvas);
 
     const orbit = new OrbitControls(camera, canvas);
     orbit.enableDamping = true; orbit.dampingFactor = 0.07; orbit.enablePan = false;
-    orbit.minDistance = 5.5; orbit.maxDistance = 11;
-    orbit.minAzimuthAngle = -0.75; orbit.maxAzimuthAngle = 0.75;   // orqa tomoni yo'q, shuning uchun cheklaymiz
-    orbit.minPolarAngle = 1.15; orbit.maxPolarAngle = 1.85;
-    orbit.target.set(0, 0.05, 0);
-    orbit.enabled = false;
-    canvas.style.touchAction = "pan-y";
+    orbit.rotateSpeed = 0.9; orbit.zoomSpeed = 0.9;
+    orbit.minPolarAngle = 0; orbit.maxPolarAngle = Math.PI;           // 360° to'liq aylanish
+    orbit.minDistance = Math.max(depth, height) * 0.9;
+    orbit.maxDistance = Math.max(depth, height) * 3.2;
+    orbit.target.set(0, 0, 0);
+
+    const home = () => {
+      const fit = (Math.max(height * 1.7, depth * 1.05) / 2) / Math.tan((camera.fov * Math.PI) / 360);
+      camera.position.set(0, height * 0.12, fit * 1.35);
+      orbit.target.set(0, 0, 0);
+      orbit.update();
+    };
 
     const resize = () => {
       const w = host.clientWidth, h = host.clientHeight;
@@ -102,53 +131,48 @@ const W = 6, H = W / 1.5, R = 5, GAP = 0.34;
       renderer.setSize(w, h, false);
     };
     new ResizeObserver(resize).observe(host);
-    resize();
+    resize(); home();
 
-    // tayyor: rasm o'rniga 3D ko'rsatiladi va tugma paydo bo'ladi
-    host.classList.add("is-3d");
+    // tayyor: rasm o'rniga 3D, boshqaruv tugmalari paydo bo'ladi
+    host.classList.add("is-3d", "is-open");
     bar.hidden = false;
+    if (CREDIT_HTML) {
+      const c = document.getElementById("modelCredit");
+      if (c) { c.innerHTML = CREDIT_HTML; c.hidden = false; }
+    }
 
-    const toggle = document.getElementById("viewerToggle");
-    const tools = document.getElementById("viewerTools");
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let open = 0, target = 0, visible = true;
+    // bosish = ochish / yopish (sudrash bilan aralashmasligi uchun masofa tekshiriladi)
+    let target = 0, down = null;
+    canvas.addEventListener("pointerdown", (e) => (down = { x: e.clientX, y: e.clientY, t: performance.now() }));
+    canvas.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
+      if (moved < 6 && performance.now() - down.t < 500) target = target ? 0 : 1;
+      down = null;
+    });
 
-    const setOpen = (v) => {
-      target = v ? 1 : 0;
-      orbit.enabled = !!v;
-      host.classList.toggle("is-open", !!v);
-      canvas.style.touchAction = v ? "none" : "pan-y";
-      tools.hidden = !v;
-      toggle.textContent = v ? "Yopish" : "3D maketni ochish";
-    };
-    toggle.onclick = () => setOpen(!target);
-    canvas.addEventListener("click", () => { if (!target) setOpen(true); });
-    document.getElementById("vZoomIn").onclick = () => { camera.position.multiplyScalar(0.88); orbit.update(); };
-    document.getElementById("vZoomOut").onclick = () => { camera.position.multiplyScalar(1.12); orbit.update(); };
-    document.getElementById("vReset").onclick = () => { camera.position.copy(HOME); orbit.target.set(0, 0.05, 0); orbit.update(); };
+    const zoom = (f) => { camera.position.sub(orbit.target).multiplyScalar(f).add(orbit.target); orbit.update(); };
+    document.getElementById("vZoomIn").onclick = () => zoom(0.85);
+    document.getElementById("vZoomOut").onclick = () => zoom(1.18);
+    document.getElementById("vReset").onclick = home;
 
+    let visible = true;
     new IntersectionObserver((e) => (visible = e[0].isIntersecting)).observe(host);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const clock = new THREE.Clock();
     renderer.setAnimationLoop(() => {
+      const dt = Math.min(clock.getDelta(), 0.05);
       if (!visible) return;
-      const t = clock.getElapsedTime();
-      open += (target - open) * (reduce ? 1 : 0.09);
-      const k = open * open * (3 - 2 * open);
-      upper.position.y = k * GAP;
-      lower.position.y = -k * GAP;
-      upper.rotation.x = -k * 0.05;
-      lower.rotation.x = k * 0.04;
-      mouth.scale.y = Math.max(0.0001, k * (GAP * 2 + 0.1));
-      if (!target && !reduce) model.rotation.y = Math.sin(t * 0.65) * 0.13;
-      else if (target) model.rotation.y *= 0.9;
+      uni.uOpen.value += (target - uni.uOpen.value) * (reduce ? 1 : 1 - Math.exp(-dt * 5));
       orbit.update();
       renderer.render(scene, camera);
     });
+    window.__dental = { uni, camera, orbit, setOpen: (v) => (target = v) };   // sinash uchun
   } catch (err) {
-    console.warn("3D maket yuklanmadi, oddiy rasm qoldi:", err);
+    console.warn("3D model yuklanmadi, oddiy rasm qoldi:", err);
     host.querySelector("canvas")?.remove();
-    host.classList.remove("is-3d");
+    host.classList.remove("is-3d", "is-open");
     bar.hidden = true;
   }
 })();
