@@ -200,7 +200,7 @@ em{font-style:italic;color:var(--gold)}
 
 /* 3D tishlar (hero) */
 .hero3d{position:relative;width:100%;aspect-ratio:4/3.4}
-.hero3d model-viewer{display:block;position:absolute;inset:0;width:100%;height:100%;--poster-color:transparent;--progress-bar-color:var(--teal)}
+.hero3d model-viewer{display:block;position:absolute;inset:0;width:100%;height:100%;--poster-color:transparent;--progress-bar-height:0px}
 .hero3d__fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .hero3d.is-ready .hero3d__fallback{display:none}
 

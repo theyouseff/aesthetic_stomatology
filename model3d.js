@@ -2,7 +2,11 @@
 (function () {
   // hero: komponent yuklansa, zaxira rasm yashiriladi
   const hero = document.getElementById("hero3d");
-  if (hero && window.customElements) customElements.whenDefined("model-viewer").then(() => hero.classList.add("is-ready"));
+  const heroMv = hero && hero.querySelector("model-viewer");
+  if (heroMv) {
+    const ready = () => hero.classList.add("is-ready");
+    if (heroMv.loaded) ready(); else heroMv.addEventListener("load", ready, { once: true });
+  }
 
   // hero nuqtalari: bosilsa tegishli bo'limga o'tadi
   document.querySelectorAll(".hs[data-go]").forEach((b) =>
@@ -18,7 +22,7 @@
   const pearl = document.getElementById("mvPearl");
 
   // komponent yuklansa, zaxira rasm yashiriladi; yuklanmasa rasm qoladi
-  if (window.customElements) customElements.whenDefined("model-viewer").then(() => stage.classList.add("is-ready"));
+  if (mv.loaded) stage.classList.add("is-ready"); else mv.addEventListener("load", () => stage.classList.add("is-ready"), { once: true });
 
   const home = () => { mv.cameraOrbit = "0deg 78deg 105%"; mv.fieldOfView = "auto"; };
   document.getElementById("mvReset").onclick = home;
