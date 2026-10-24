@@ -90,48 +90,16 @@ const CASES = [
 ];
 
 /* hero */
-/* 3D tishlar: sichqoncha bilan buriladi va yaltiraydi */
+/* 3D tishlar: sichqoncha bilan biroz buriladi */
 (function () {
   const card = document.querySelector(".hero__card");
-  const wrap = document.getElementById("teeth3d");
-  const sparks = wrap.querySelector(".sparks");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let last = 0;
-
-  function spark(x, y, big) {
-    const el = document.createElement("i");
-    el.className = "spark";
-    el.style.left = x + "px";
-    el.style.top = y + "px";
-    el.style.setProperty("--s", (big ? 16 + Math.random() * 18 : 8 + Math.random() * 12) + "px");
-    sparks.appendChild(el);
-    setTimeout(() => el.remove(), 900);
-  }
-
   card.addEventListener("pointermove", (e) => {
     const r = card.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
     card.style.transform = `perspective(900px) rotateY(${(px - 0.5) * 22}deg) rotateX(${(0.5 - py) * 16}deg)`;
-    const w = wrap.getBoundingClientRect();
-    const mx = e.clientX - w.left, my = e.clientY - w.top;
-    wrap.style.setProperty("--mx", (mx / w.width) * 100 + "%");
-    wrap.style.setProperty("--my", (my / w.height) * 100 + "%");
-    card.classList.add("is-live");
-    const now = performance.now();
-    if (now - last > 110 && mx > 0 && my > 0 && mx < w.width && my < w.height) {
-      last = now;
-      spark(mx + (Math.random() - 0.5) * 30, my + (Math.random() - 0.5) * 30);
-    }
   });
-  card.addEventListener("pointerleave", () => {
-    card.style.transform = "";
-    card.classList.remove("is-live");
-  });
-  card.addEventListener("pointerdown", (e) => {
-    const w = wrap.getBoundingClientRect();
-    for (let i = 0; i < 9; i++)
-      spark(e.clientX - w.left + (Math.random() - 0.5) * 120, e.clientY - w.top + (Math.random() - 0.5) * 80, true);
-  });
+  card.addEventListener("pointerleave", () => (card.style.transform = ""));
 })();
 
 /* ---------- oldin / keyin ---------- */
