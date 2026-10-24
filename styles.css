@@ -224,3 +224,13 @@ em{font-style:italic;color:var(--gold)}
 .mv__btns button:hover{border-color:var(--teal)}
 .mv__btns button.is-on{background:var(--teal);color:#fff;border-color:var(--teal)}
 @media (max-width:960px){.mv{grid-template-columns:1fr;gap:36px}.mv__stage{min-height:480px}}
+
+/* hero 3D: xizmat nuqtalari */
+.hs{--s:26px;width:var(--s);height:var(--s);border-radius:50%;border:2px solid #fff;background:var(--teal);box-shadow:0 4px 14px rgba(15,59,56,.4);color:#fff;cursor:pointer;position:relative;padding:0;animation:pulse 2.4s infinite}
+.hs:before{content:"+";position:absolute;inset:0;display:grid;place-items:center;font:700 16px/1 var(--sans)}
+.hs span{position:absolute;left:34px;top:50%;translate:0 -50%;white-space:nowrap;background:#fff;color:var(--ink);border-radius:10px;padding:6px 10px;font:600 12px var(--sans);box-shadow:0 8px 20px rgba(15,59,56,.2);opacity:0;pointer-events:none;transition:.2s}
+.hs:hover span,.hs:focus span{opacity:1}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,95,91,.55)}70%{box-shadow:0 0 0 14px rgba(31,95,91,0)}100%{box-shadow:0 0 0 0 rgba(31,95,91,0)}}
+@media (prefers-reduced-motion:reduce){.hs{animation:none}}
+.nav__links a{white-space:nowrap}
+@media (max-width:1100px) and (min-width:821px){.nav__links{gap:16px;font-size:.84rem}.nav__in{gap:16px}}

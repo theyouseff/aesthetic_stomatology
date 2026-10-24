@@ -4,6 +4,11 @@
   const hero = document.getElementById("hero3d");
   if (hero && window.customElements) customElements.whenDefined("model-viewer").then(() => hero.classList.add("is-ready"));
 
+  // hero nuqtalari: bosilsa tegishli bo'limga o'tadi
+  document.querySelectorAll(".hs[data-go]").forEach((b) =>
+    b.addEventListener("click", () => document.querySelector(b.dataset.go)?.scrollIntoView({ behavior: "smooth" }))
+  );
+
   const mv = document.getElementById("mv");
   if (!mv) return;
   const stage = mv.parentElement;

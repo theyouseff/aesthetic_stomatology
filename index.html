@@ -52,11 +52,15 @@
       <div class="hero__card">
         <div class="hero3d" id="hero3d">
           <img class="hero3d__fallback" src="assets/teeth.webp" width="1536" height="1024" alt="Mukammal tabassum: tishlar modeli">
-          <model-viewer src="assets/dental-arch.glb" alt="Odam tishlari va milki 3D modeli" poster="assets/teeth.webp"
-            camera-controls auto-rotate auto-rotate-delay="1200" rotation-per-second="14deg"
-            camera-orbit="0deg 80deg 108%" min-camera-orbit="auto auto 55%" max-camera-orbit="auto auto 180%"
-            shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05" tone-mapping="commerce"
-            interaction-prompt="none" environment-image="neutral" reveal="auto"></model-viewer>
+          <model-viewer src="assets/dental_model.glb" alt="Tishlar, milk va og'iz bo'shlig'ining 3D maketi"
+            camera-controls auto-rotate auto-rotate-delay="1500" rotation-per-second="14deg"
+            camera-orbit="0deg 88deg 82%" min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 170%"
+            shadow-intensity="1.1" shadow-softness="0.9" exposure="1.08" tone-mapping="commerce"
+            interaction-prompt="none" environment-image="neutral" reveal="auto">
+            <button class="hs" slot="hotspot-veneer" data-position="0.0045m 0.0070m 0.0291m" data-normal="0m 0m 1m" data-visibility-attribute="visible" data-go="#oldin-keyin"><span>Vinirlar va estetika</span></button>
+            <button class="hs" slot="hotspot-implant" data-position="-0.0211m 0.0005m 0.0051m" data-normal="0m 1m 0m" data-visibility-attribute="visible" data-go="#portfolio"><span>Implantatsiya</span></button>
+            <button class="hs" slot="hotspot-gum" data-position="-0.0105m 0.0181m 0.0281m" data-normal="0m 0m 1m" data-visibility-attribute="visible" data-go="#aloqa"><span>Milk davolash</span></button>
+          </model-viewer>
         </div>
       </div>
     </div>
