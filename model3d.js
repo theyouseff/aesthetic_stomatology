@@ -4,8 +4,42 @@
   const hero = document.getElementById("hero3d");
   const heroMv = hero && hero.querySelector("model-viewer");
   if (heroMv) {
-    const ready = () => hero.classList.add("is-ready");
+    const btn = document.getElementById("heroOpen");
+    let isOpen = false, anim = 0, pos = 0;
+    const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    // modelning ichidagi "open" animatsiyasi qo'lda, silliq (1 soniya) boshqariladi
+    const setOpen = (v) => {
+      isOpen = v;
+      btn.textContent = v ? "Og'izni yopish" : "Og'izni ochish";
+      const from = pos, to = v ? 1 : 0, t0 = performance.now();
+      cancelAnimationFrame(anim);
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / 1000);
+        pos = from + (to - from) * ease(k);
+        try { heroMv.currentTime = pos; } catch (e) { /* model hali tayyor emas */ }
+        if (k < 1) anim = requestAnimationFrame(step);
+      };
+      anim = requestAnimationFrame(step);
+    };
+
+    const ready = () => {
+      hero.classList.add("is-ready");
+      try { heroMv.animationName = "open"; heroMv.pause(); heroMv.currentTime = 0; pos = 0; isOpen = false; } catch (e) { return; }
+      btn.hidden = false;
+    };
     if (heroMv.loaded) ready(); else heroMv.addEventListener("load", ready, { once: true });
+
+    btn.addEventListener("click", () => setOpen(!isOpen));
+    // modelga bosish = ochish/yopish (sudrash va nuqtalarni bosish hisobga olinmaydi)
+    let down = null;
+    heroMv.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY, performance.now()]));
+    heroMv.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      const d = Math.hypot(e.clientX - down[0], e.clientY - down[1]);
+      if (d < 6 && performance.now() - down[2] < 500 && !(e.target.closest && e.target.closest(".hs"))) setOpen(!isOpen);
+      down = null;
+    });
   }
 
   // hero nuqtalari: bosilsa tegishli bo'limga o'tadi
