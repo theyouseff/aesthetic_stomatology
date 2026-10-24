@@ -23,6 +23,13 @@
       anim = requestAnimationFrame(step);
     };
 
+    // model-viewer to'xtatilgan animatsiyani o'zi 0 ga qaytarib qo'yadi, shuning uchun ochiq holat har kadrda qayta o'rnatiladi
+    const hold = () => {
+      if (pos > 0) { try { heroMv.currentTime = pos; } catch (e) { /* tayyor emas */ } }
+      requestAnimationFrame(hold);
+    };
+    requestAnimationFrame(hold);
+
     const ready = () => {
       hero.classList.add("is-ready");
       try { heroMv.animationName = "open"; heroMv.pause(); heroMv.currentTime = 0; pos = 0; isOpen = false; } catch (e) { return; }
