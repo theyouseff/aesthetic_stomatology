@@ -89,8 +89,16 @@ const CASES = [
     after: { shade: "#fcf9f1", seed: 9 } },
 ];
 
-/* hero */
-/* ---------- oldin / keyin ---------- */
+/* ---------- oldin / keyin ---------- (namunaviy 3D tasvirlar; haqiqiy bemor fotolari qo'yilganda faqat yo'llarni almashtiring) */
+const BA_CASES = [
+  { cap: "Professional oqartirish: tishlar rangining farqi.",
+    before: "assets/ba-yellow.webp", after: "assets/ba-white.webp" },
+  { cap: "Tishlarni tekislash: notekis tishlar to'g'rilangan holat.",
+    before: "assets/ba-crooked.webp", after: "assets/ba-white.webp" },
+  { cap: "Breketlar: notekis tishlarni tekislash jarayoni.",
+    before: "assets/ba-crooked.webp", after: "assets/ba-braces.webp" },
+];
+
 const baBefore = document.getElementById("baBefore");
 const baAfter = document.getElementById("baAfter");
 const baWrap = document.getElementById("baBeforeWrap");
@@ -99,9 +107,9 @@ const baRange = document.getElementById("baRange");
 const baCap = document.getElementById("baCap");
 
 function setCase(i) {
-  baBefore.innerHTML = smile(CASES[i].before);
-  baAfter.innerHTML = smile(CASES[i].after);
-  baCap.textContent = CASES[i].cap;
+  baBefore.src = BA_CASES[i].before;
+  baAfter.src = BA_CASES[i].after;
+  baCap.textContent = BA_CASES[i].cap;
 }
 function setSlide(v) {
   baWrap.style.clipPath = `inset(0 ${100 - v}% 0 0)`;

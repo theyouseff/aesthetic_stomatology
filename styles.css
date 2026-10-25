@@ -114,9 +114,9 @@ em{font-style:italic;color:var(--gold)}
 .ba-tab,.f{padding:10px 20px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:.88rem;font-weight:600;transition:.2s}
 .ba-tab:hover,.f:hover{border-color:var(--teal)}
 .ba-tab.is-on,.f.is-on{background:var(--teal);color:#fff;border-color:var(--teal)}
-.ba{position:relative;aspect-ratio:400/260;max-width:860px;margin-inline:auto;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);user-select:none;background:#fff}
+.ba{position:relative;aspect-ratio:1076/362;max-width:1000px;margin-inline:auto;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);user-select:none;background:#f8f8f8}
 .ba__layer{position:absolute;inset:0}
-.ba__layer svg{width:100%;height:100%}
+.ba__layer img{width:100%;height:100%;object-fit:contain;user-select:none;pointer-events:none}
 .ba__before{clip-path:inset(0 50% 0 0)}
 .tag{position:absolute;top:16px;padding:6px 14px;border-radius:99px;background:rgba(15,59,56,.85);color:#fff;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .tag--l{left:16px}.tag--r{right:16px;background:var(--gold)}

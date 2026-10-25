@@ -214,18 +214,18 @@
     </header>
 
     <div class="ba-tabs reveal" role="tablist">
-      <button class="ba-tab is-on" role="tab" data-case="0">Vinirlar</button>
-      <button class="ba-tab" role="tab" data-case="1">Oqartirish</button>
-      <button class="ba-tab" role="tab" data-case="2">Tishlarni tekislash</button>
+      <button class="ba-tab is-on" role="tab" data-case="0">Oqartirish</button>
+      <button class="ba-tab" role="tab" data-case="1">Tishlarni tekislash</button>
+      <button class="ba-tab" role="tab" data-case="2">Breketlar</button>
     </div>
 
     <div class="ba reveal" id="ba">
-      <div class="ba__layer ba__after"><svg id="baAfter" viewBox="0 0 400 260"></svg><span class="tag tag--r">Keyin</span></div>
-      <div class="ba__layer ba__before" id="baBeforeWrap"><svg id="baBefore" viewBox="0 0 400 260"></svg><span class="tag tag--l">Oldin</span></div>
+      <div class="ba__layer ba__after"><img id="baAfter" alt="Keyin" draggable="false"><span class="tag tag--r">Keyin</span></div>
+      <div class="ba__layer ba__before" id="baBeforeWrap"><img id="baBefore" alt="Oldin" draggable="false"><span class="tag tag--l">Oldin</span></div>
       <div class="ba__handle" id="baHandle"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></span></div>
       <input class="ba__range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Oldin va keyin solishtirish">
     </div>
-    <p class="ba__cap reveal" id="baCap">Vinirlar: 8 ta yuqori tish, davomiyligi — 2 tashrif.</p>
+    <p class="ba__cap reveal" id="baCap"></p>
   </div>
 </section>
 
