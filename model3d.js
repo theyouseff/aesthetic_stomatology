@@ -5,47 +5,40 @@
   const heroMv = hero && hero.querySelector("model-viewer");
   if (heroMv) {
     const btn = document.getElementById("heroOpen");
-    let isOpen = false, anim = 0, pos = 0;
-    const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    let isOpen = false, baseRadius = 0;
 
-    // modelning ichidagi "open" animatsiyasi qo'lda, silliq (1 soniya) boshqariladi
+    // modelning ichidagi "open" animatsiyasi haqiqiy ijro bilan o'ynatiladi: ochilganda oxirgi kadrda to'xtab, og'iz ochiq turadi;
+    // yopilganda teskari o'ynaladi va yopiq kadrda to'xtaydi
     const setOpen = (v) => {
       isOpen = v;
       btn.textContent = v ? "Og'izni yopish" : "Og'izni ochish";
-      const from = pos, to = v ? 1 : 0, t0 = performance.now();
-      cancelAnimationFrame(anim);
-      const step = (now) => {
-        const k = Math.min(1, (now - t0) / 1000);
-        pos = from + (to - from) * ease(k);
-        try { heroMv.currentTime = pos; } catch (e) { /* model hali tayyor emas */ }
-        if (k < 1) anim = requestAnimationFrame(step);
-      };
-      anim = requestAnimationFrame(step);
+      heroMv.animationName = "open";
+      heroMv.timeScale = v ? 1 : -1;
+      heroMv.play({ repetitions: 1 });
+      // ochiq jag' yon tomondan ko'rinsa qirqilib qolmasligi uchun kamera biroz uzoqlashadi
+      const o = heroMv.getCameraOrbit();
+      heroMv.cameraOrbit = `${o.theta}rad ${o.phi}rad ${baseRadius * (v ? 1.35 : 1)}m`;
     };
-
-    // model-viewer to'xtatilgan animatsiyani o'zi 0 ga qaytarib qo'yadi, shuning uchun ochiq holat har kadrda qayta o'rnatiladi
-    const hold = () => {
-      if (pos > 0) { try { heroMv.currentTime = pos; } catch (e) { /* tayyor emas */ } }
-      requestAnimationFrame(hold);
-    };
-    requestAnimationFrame(hold);
 
     const ready = () => {
       hero.classList.add("is-ready");
-      try { heroMv.animationName = "open"; heroMv.pause(); heroMv.currentTime = 0; pos = 0; isOpen = false; } catch (e) { return; }
+      try {
+        heroMv.animationName = "open"; heroMv.timeScale = 1; heroMv.pause(); heroMv.currentTime = 0;
+        baseRadius = heroMv.getCameraOrbit().radius;
+      } catch (e) { return; }
+      isOpen = false;
       btn.hidden = false;
     };
     if (heroMv.loaded) ready(); else heroMv.addEventListener("load", ready, { once: true });
 
     btn.addEventListener("click", () => setOpen(!isOpen));
-    // modelga bosish = ochish/yopish (sudrash va nuqtalarni bosish hisobga olinmaydi)
+    // modelga bosish = ochish/yopish; sudrash (aylantirish) bosish hisoblanmaydi
     let down = null;
-    heroMv.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY, performance.now()]));
-    heroMv.addEventListener("pointerup", (e) => {
-      if (!down) return;
-      const d = Math.hypot(e.clientX - down[0], e.clientY - down[1]);
-      if (d < 6 && performance.now() - down[2] < 500 && !(e.target.closest && e.target.closest(".hs"))) setOpen(!isOpen);
+    heroMv.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
+    heroMv.addEventListener("click", (e) => {
+      const moved = down ? Math.hypot(e.clientX - down[0], e.clientY - down[1]) : 0;
       down = null;
+      if (moved < 8) setOpen(!isOpen);
     });
   }
 
