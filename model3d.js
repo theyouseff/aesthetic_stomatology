@@ -5,7 +5,7 @@
   const heroMv = hero && hero.querySelector("model-viewer");
   if (heroMv) {
     const btn = document.getElementById("heroOpen");
-    let isOpen = false, baseRadius = 0;
+    let isOpen = false;
 
     // modelning ichidagi "open" animatsiyasi haqiqiy ijro bilan o'ynatiladi: ochilganda oxirgi kadrda to'xtab, og'iz ochiq turadi;
     // yopilganda teskari o'ynaladi va yopiq kadrda to'xtaydi
@@ -15,16 +15,12 @@
       heroMv.animationName = "open";
       heroMv.timeScale = v ? 1 : -1;
       heroMv.play({ repetitions: 1 });
-      // ochiq jag' yon tomondan ko'rinsa qirqilib qolmasligi uchun kamera biroz uzoqlashadi
-      const o = heroMv.getCameraOrbit();
-      heroMv.cameraOrbit = `${o.theta}rad ${o.phi}rad ${baseRadius * (v ? 1.35 : 1)}m`;
     };
 
     const ready = () => {
       hero.classList.add("is-ready");
       try {
         heroMv.animationName = "open"; heroMv.timeScale = 1; heroMv.pause(); heroMv.currentTime = 0;
-        baseRadius = heroMv.getCameraOrbit().radius;
       } catch (e) { return; }
       isOpen = false;
       btn.hidden = false;
