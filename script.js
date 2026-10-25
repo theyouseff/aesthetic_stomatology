@@ -105,21 +105,19 @@ menu.addEventListener("click", (e) => {
   }
 });
 
-/* ---------- forma (hozircha serverga ulanmagan) ---------- */
-document.getElementById("form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const f = e.target, msg = document.getElementById("formMsg");
-  const name = f.name.value.trim(), phone = f.phone.value.replace(/\D/g, "");
-  f.name.classList.toggle("err", !name);
-  f.phone.classList.toggle("err", phone.length < 9);
-  if (!name || phone.length < 9) {
-    msg.style.color = "#c0392b";
-    msg.textContent = "Ism va telefon raqamini to'g'ri kiriting.";
-    return;
-  }
-  msg.style.color = "";
-  msg.textContent = "Rahmat, " + name + "! Tez orada bog'lanamiz.";
-  f.reset();
+/* ---------- yozilish tugmalari ----------
+   Barcha [data-cta] tugmalar bitta manzilga olib boradi. Klientga topshirishda faqat shu manzilni almashtiring. */
+const BOOKING_URL = "https://hipolink.net/aestheticstomatology";
+document.querySelectorAll("[data-cta]").forEach((a) => {
+  a.href = BOOKING_URL;
+  a.target = "_blank";
+  a.rel = "noopener";
 });
+
+// telefonda pastda doimiy "Qabulga yozilish" tugmasi (sahifa biroz aylantirilgach chiqadi)
+const sticky = document.getElementById("stickyCta");
+const toggleSticky = () => sticky.classList.toggle("show", scrollY > 600);
+addEventListener("scroll", toggleSticky, { passive: true });
+toggleSticky();
 
 document.getElementById("yr").textContent = new Date().getFullYear();

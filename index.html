@@ -33,7 +33,7 @@
       <a href="#portfolio">Portfolio</a>
       <a href="#faq">Savollar</a>
     </nav>
-    <a href="https://hipolink.net/aestheticstomatology" class="btn btn--sm" target="_blank" rel="noopener">Yozilish</a>
+    <a href="https://hipolink.net/aestheticstomatology" class="btn btn--sm" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
     <button class="burger" id="burger" aria-label="Menyu" aria-expanded="false"><span></span><span></span></button>
   </div>
 </header>
@@ -48,7 +48,7 @@
       <h1 class="reveal">Vinirlar va <em>Hollivud</em> tabassumi</h1>
       <p class="lead reveal">Og'riqsiz davolash, to'liq stomatologik xizmatlar va har bir bemorga individual yondashuv. Tabassumingizni yuzingizga mos, tabiiy ko'rinishda yaratamiz.</p>
       <div class="hero__cta reveal">
-        <a href="https://hipolink.net/aestheticstomatology" class="btn" target="_blank" rel="noopener">Konsultatsiyaga yozilish</a>
+        <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
         <a href="#oldin-keyin" class="btn btn--ghost">Natijalarni ko'rish</a>
       </div>
     </div>
@@ -98,6 +98,11 @@
         <p>Zamonaviy behushlik, yumshoq yondashuv va tushunarli reja: har bir bosqichni oldindan tushuntiramiz.</p>
       </article>
     </div>
+
+    <div class="cta-strip reveal">
+      <p><b>Qaysi biri sizga yaqin?</b><span>Shifokor holatingizni ko'rib chiqadi va mos reja taklif qiladi.</span></p>
+      <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    </div>
   </div>
 </section>
 
@@ -109,6 +114,10 @@
       <h2>Natijalar <em>o'zi gapiradi</em></h2>
     </header>
     <div class="grid results" id="resultsGrid"></div>
+    <div class="cta-strip cta-strip--dark reveal">
+      <p><b>Siz ham shunday natija xohlaysizmi?</b><span>Birinchi qadam: shifokor ko'rigi va davolash rejasi.</span></p>
+      <a href="https://hipolink.net/aestheticstomatology" class="btn btn--gold" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    </div>
   </div>
 </section>
 
@@ -201,6 +210,10 @@
       <input class="ba__range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Oldin va keyin solishtirish">
     </div>
     <p class="ba__cap reveal" id="baCap"></p>
+    <div class="cta-strip reveal">
+      <p><b>Tabassumingizni o'zgartirishga tayyormisiz?</b><span>Qabulga yoziling, shifokor sizga mos usulni tushuntiradi.</span></p>
+      <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    </div>
   </div>
 </section>
 
@@ -239,32 +252,12 @@
 
 <!-- ALOQA -->
 <section class="cta" id="aloqa">
-  <div class="wrap cta__in">
-    <div class="reveal">
-      <p class="eyebrow eyebrow--light">Konsultatsiya</p>
-      <h2>Tabassumingizni birga <em>loyihalaymiz</em></h2>
-      <p class="lead lead--light">Raqamingizni qoldiring yoki to'g'ridan-to'g'ri yozilish sahifasiga o'ting.</p>
-      <ul class="contacts">
-        <li>📍 Toshkent (aniq manzilni qo'shing)</li>
-        <li>🔗 <a href="https://hipolink.net/aestheticstomatology" target="_blank" rel="noopener">Konsultatsiyaga yozilish sahifasi</a></li>
-      </ul>
-    </div>
-    <form class="form reveal" id="form" novalidate>
-      <label>Ismingiz<input name="name" type="text" placeholder="Ism" required autocomplete="name"></label>
-      <label>Telefon<input name="phone" type="tel" placeholder="+998 __ ___ __ __" required autocomplete="tel"></label>
-      <label>Qiziqtirgan xizmat
-        <select name="service">
-          <option>Maslahat kerak</option>
-          <option>Vinirlar</option>
-          <option>Oqartirish</option>
-          <option>Implantatsiya</option>
-          <option>Tishlarni tekislash</option>
-        </select>
-      </label>
-      <button class="btn btn--gold" type="submit">Yuborish</button>
-      <a class="form__alt" href="https://hipolink.net/aestheticstomatology" target="_blank" rel="noopener">yoki hipolink orqali yoziling →</a>
-      <p class="form__msg" id="formMsg" role="status"></p>
-    </form>
+  <div class="wrap cta__in reveal">
+    <p class="eyebrow eyebrow--light">Qabulga yozilish</p>
+    <h2>Tabassumingiz uchun birinchi qadamni <em>qo'ying</em></h2>
+    <p class="lead lead--light">Yozilish sahifasiga o'ting va qabulga yoziling. Shifokor holatingizni ko'rib, davolash rejasini tushuntiradi.</p>
+    <a href="https://hipolink.net/aestheticstomatology" class="btn btn--gold btn--lg" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    <ul class="cta__trust"><li>Og'riqsiz davolash</li><li>Individual yondashuv</li><li>To'liq stomatologik xizmatlar</li></ul>
   </div>
 </section>
 
@@ -276,6 +269,8 @@
     <span>© <span id="yr"></span> Barcha huquqlar himoyalangan</span>
   </div>
 </footer>
+
+<a href="https://hipolink.net/aestheticstomatology" class="sticky-cta" id="stickyCta" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
 
 <script src="script.js"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
