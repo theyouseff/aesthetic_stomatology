@@ -28,6 +28,7 @@
       <a href="#natijalar">Natijalar</a>
       <a href="#metodika">Metodika</a>
       <a href="#3d">3D ko'rik</a>
+      <a href="#sharhlar" id="navReviews" hidden>Sharhlar</a>
       <a href="#oldin-keyin">Oldin va keyin</a>
       <a href="#portfolio">Portfolio</a>
       <a href="#faq">Savollar</a>
@@ -164,24 +165,24 @@
     <div class="mv__info reveal">
       <p class="eyebrow">3D ko'rik</p>
       <h2>Tabassumni <em>har tomondan</em> ko'ring</h2>
-      <p class="lead">Haqiqiy 3D modelni ushlab aylantiring va yaqinlashtiring: tishlar va milkning tabiiy tuzilishini har burchakdan ko'rasiz.</p>
+      <p class="lead">Haqiqiy 3D modelni ushlab aylantiring va yaqinlashtiring, og'izni oching: tishlar va milkning tuzilishini har burchakdan ko'rasiz.</p>
       <ul class="mv__facts">
         <li><b>360°</b> aylantirish</li>
         <li><b>Zoom</b> yaqindan ko'rish</li>
       </ul>
-      <p class="mv__credit">Model: <a href="https://sketchfab.com/3d-models/human-teeth-c4c569f0e08948e2a572007a7a5726f2" target="_blank" rel="noopener">"Human teeth"</a>, <a href="https://sketchfab.com/Dessen" target="_blank" rel="noopener">Alexander Antipov</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Formati va teksturalari siqilgan.</p>
     </div>
     <div class="mv__stage reveal">
-      <img class="mv__fallback" id="mvFallback" src="assets/teeth.webp" alt="Tishlar modeli" width="1536" height="1024">
-      <model-viewer id="mv" src="assets/dental-arch.glb" alt="Odam tishlari va milki 3D modeli" poster="assets/teeth.webp"
-        camera-controls auto-rotate auto-rotate-delay="800" rotation-per-second="18deg"
-        camera-orbit="0deg 78deg 105%" min-camera-orbit="auto auto 55%" max-camera-orbit="auto auto 180%"
-        shadow-intensity="1.2" shadow-softness="0.9" exposure="1.05" tone-mapping="commerce"
-        interaction-prompt="none" environment-image="neutral" loading="lazy" reveal="auto"></model-viewer>
+      <img class="mv__fallback" id="mvFallback" src="assets/model-poster.webp" alt="Tishlar modeli" width="1200" height="1020">
+      <model-viewer id="mv" src="assets/dental_model.glb" alt="Tishlar, milk va og'iz bo'shlig'ining 3D modeli"
+        camera-controls disable-tap disable-pan auto-rotate auto-rotate-delay="1500" rotation-per-second="14deg"
+        camera-orbit="0deg 88deg 104%" min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 170%"
+        shadow-intensity="1.1" shadow-softness="0.9" exposure="1.08" tone-mapping="commerce"
+        interaction-prompt="none" environment-image="neutral" reveal="auto"></model-viewer>
       <p class="mv__warn" id="mvWarn" hidden>3D model yuklanmadi. Sahifani server yoki hosting orqali oching.</p>
       <div class="mv__bar">
         <span class="mv__hint">Ushlab aylantiring · g'ildirak yoki ikki barmoq: zoom</span>
         <div class="mv__btns">
+          <button type="button" id="mvOpen" hidden>Og'izni ochish</button>
           <button type="button" id="mvNatural" class="is-on">Tabiiy</button>
           <button type="button" id="mvPearl">Oq</button>
           <button type="button" id="mvReset">Markazga</button>
@@ -189,6 +190,17 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- SHARHLAR: reviews.js dagi ro'yxat bo'sh bo'lsa, bo'lim ko'rinmaydi -->
+<section class="sec sec--tint" id="sharhlar" hidden>
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <p class="eyebrow">Sharhlar</p>
+      <h2>Bemorlarimiz <em>aytganlari</em></h2>
+    </header>
+    <div class="reviews" id="reviewsList"></div>
   </div>
 </section>
 
@@ -294,6 +306,7 @@
 
 <script src="script.js"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<script src="reviews.js" defer></script>
 <script src="model3d.js" defer></script>
 </body>
 </html>

@@ -1,62 +1,57 @@
-/* "3D ko'rik" bo'limi: <model-viewer> boshqaruvi */
+/* 3D modellar (<model-viewer>): hero va "3D ko'rik" bo'limi bir xil modeldan foydalanadi */
 (function () {
-  // hero: komponent yuklansa, zaxira rasm yashiriladi
   const hero = document.getElementById("hero3d");
   const heroMv = hero && hero.querySelector("model-viewer");
-  if (heroMv) {
-    const btn = document.getElementById("heroOpen");
-    let isOpen = false;
+  const mv = document.getElementById("mv");
 
-    // modelning ichidagi "open" animatsiyasi haqiqiy ijro bilan o'ynatiladi: ochilganda oxirgi kadrda to'xtab, og'iz ochiq turadi;
-    // yopilganda teskari o'ynaladi va yopiq kadrda to'xtaydi
+  // index.html fayldan (file://) ochilsa, model sahifa ichiga joylangan nusxadan olinadi
+  if (location.protocol === "file:") {
+    const s = document.createElement("script");
+    s.src = "assets/models-data.js";
+    s.onload = () => {
+      if (heroMv) heroMv.src = window.DENTAL_MODELS.hero;
+      if (mv) mv.src = window.DENTAL_MODELS.hero;
+    };
+    document.head.appendChild(s);
+  }
+
+  // Og'iz ochish/yopish: modelning ichidagi "open" animatsiyasi haqiqiy ijro bilan o'ynatiladi.
+  // Ochilganda oxirgi kadrda to'xtab og'iz ochiq turadi; yopilganda teskari o'ynaladi va yopiq kadrda to'xtaydi.
+  // onReady model yuklangach chaqiriladi (zaxira rasm yashiriladi, tugma ko'rsatiladi).
+  function jaw(el, btn, onReady) {
+    let isOpen = false;
     const setOpen = (v) => {
       isOpen = v;
       btn.textContent = v ? "Og'izni yopish" : "Og'izni ochish";
-      heroMv.animationName = "open";
-      heroMv.timeScale = v ? 1 : -1;
-      heroMv.play({ repetitions: 1 });
+      el.animationName = "open";
+      el.timeScale = v ? 1 : -1;
+      el.play({ repetitions: 1 });
     };
-
     const ready = () => {
-      hero.classList.add("is-ready");
       try {
-        heroMv.animationName = "open"; heroMv.timeScale = 1; heroMv.pause(); heroMv.currentTime = 0;
+        el.animationName = "open"; el.timeScale = 1; el.pause(); el.currentTime = 0;
       } catch (e) { return; }
       isOpen = false;
       btn.hidden = false;
+      onReady();
     };
-    if (heroMv.loaded) ready(); else heroMv.addEventListener("load", ready, { once: true });
+    if (el.loaded) ready(); else el.addEventListener("load", ready, { once: true });
 
     btn.addEventListener("click", () => setOpen(!isOpen));
     // modelga bosish = ochish/yopish; sudrash (aylantirish) bosish hisoblanmaydi
     let down = null;
-    heroMv.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
-    heroMv.addEventListener("click", (e) => {
-      if (e.detail > 1) return; // ikki marta bosish (double-click) ochish/yopishni qayta almashtirmasin
+    el.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
+    el.addEventListener("click", (e) => {
+      if (e.detail > 1) return; // ikki marta bosish ochish/yopishni qayta almashtirmasin
       const moved = down ? Math.hypot(e.clientX - down[0], e.clientY - down[1]) : 0;
       down = null;
       if (moved < 8) setOpen(!isOpen);
     });
   }
 
-  // hero nuqtalari: bosilsa tegishli bo'limga o'tadi
-  document.querySelectorAll(".hs[data-go]").forEach((b) =>
-    b.addEventListener("click", () => document.querySelector(b.dataset.go)?.scrollIntoView({ behavior: "smooth" }))
-  );
+  if (heroMv) jaw(heroMv, document.getElementById("heroOpen"), () => hero.classList.add("is-ready"));
 
-  const mv = document.getElementById("mv");
-
-  // index.html fayldan (file://) ochilsa, modellar sahifa ichiga joylangan nusxadan olinadi
-  if (location.protocol === "file:") {
-    const s = document.createElement("script");
-    s.src = "assets/models-data.js";
-    s.onload = () => {
-      if (heroMv) heroMv.src = window.DENTAL_MODELS.hero;
-      if (mv) mv.src = window.DENTAL_MODELS.arch;
-    };
-    document.head.appendChild(s);
-  }
-
+  // ---- "3D ko'rik" bo'limi ----
   if (!mv) return;
   const stage = mv.parentElement;
   const warn = document.getElementById("mvWarn");
@@ -64,11 +59,9 @@
   const natural = document.getElementById("mvNatural");
   const pearl = document.getElementById("mvPearl");
 
-  // komponent yuklansa, zaxira rasm yashiriladi; yuklanmasa rasm qoladi
-  if (mv.loaded) stage.classList.add("is-ready"); else mv.addEventListener("load", () => stage.classList.add("is-ready"), { once: true });
+  jaw(mv, document.getElementById("mvOpen"), () => stage.classList.add("is-ready"));
 
-  const home = () => { mv.cameraOrbit = "0deg 78deg 105%"; mv.fieldOfView = "auto"; };
-  document.getElementById("mvReset").onclick = home;
+  document.getElementById("mvReset").onclick = () => { mv.cameraOrbit = "0deg 88deg 104%"; mv.fieldOfView = "auto"; };
 
   let spinning = true;
   spin.onclick = () => {
@@ -83,15 +76,15 @@
     const teeth = mv.model.materials.find((m) => /teeth/i.test(m.name));
     const gums = mv.model.materials.find((m) => /gums/i.test(m.name));
     if (name === "pearl") {
-      teeth?.pbrMetallicRoughness.setBaseColorFactor([1, 0.99, 0.94, 1]);
-      teeth?.pbrMetallicRoughness.setRoughnessFactor(0.18);
-      gums?.pbrMetallicRoughness.setBaseColorFactor([1, 0.74, 0.74, 1]);
-      mv.exposure = 1.15;
+      teeth?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1.03, 1]);
+      teeth?.pbrMetallicRoughness.setRoughnessFactor(0.75);
+      gums?.pbrMetallicRoughness.setBaseColorFactor([1, 0.96, 0.96, 1]);
+      mv.exposure = 1.16;
     } else {
       teeth?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
-      teeth?.pbrMetallicRoughness.setRoughnessFactor(0.5);
+      teeth?.pbrMetallicRoughness.setRoughnessFactor(1);
       gums?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
-      mv.exposure = 1.05;
+      mv.exposure = 1.08;
     }
     natural.classList.toggle("is-on", name !== "pearl");
     pearl.classList.toggle("is-on", name === "pearl");
