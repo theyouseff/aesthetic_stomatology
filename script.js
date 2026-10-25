@@ -41,8 +41,7 @@ const WORKS = [
   { t: "tekislash", title: "Breketlar", d: "Tekislash jarayoni", c: 2 },
 ];
 const LABELS = { oqartirish: "Oqartirish", tekislash: "Tekislash" };
-const grid = document.getElementById("grid");
-grid.innerHTML = WORKS.map((w) => {
+const workCard = (w) => {
   const c = BA_CASES[w.c];
   return `<article class="work reveal" data-t="${w.t}">
     <div class="work__img">
@@ -53,7 +52,12 @@ grid.innerHTML = WORKS.map((w) => {
     <div class="work__body"><small>${LABELS[w.t]}</small>
       <h3>${w.title}</h3><p>${w.d}</p></div>
   </article>`;
-}).join("");
+};
+const grid = document.getElementById("grid");
+grid.innerHTML = WORKS.map(workCard).join("");
+// "Natijalar" bo'limida ham xuddi shu kartalar ko'rsatiladi
+const resultsGrid = document.getElementById("resultsGrid");
+if (resultsGrid) resultsGrid.innerHTML = WORKS.map(workCard).join("");
 
 document.querySelectorAll(".f").forEach((b) =>
   b.addEventListener("click", () => {

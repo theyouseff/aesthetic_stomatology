@@ -266,3 +266,5 @@ em{font-style:italic;color:var(--gold)}
 #mvOpen[hidden]{display:none}
 @media (max-width:600px){.mv__hint{display:none}.mv__stage{min-height:520px}.mv__fallback{padding:24px 12px 120px}}
 .reviews__note{font-size:.8rem;color:var(--muted);margin:-20px 0 24px}
+.sec--dark .work__body h3{color:var(--ink)}
+.sec--dark .work__body p{color:var(--muted)}
