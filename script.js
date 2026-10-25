@@ -109,8 +109,11 @@ menu.addEventListener("click", (e) => {
 
 // telefonda pastda doimiy "Qabulga yozilish" tugmasi (sahifa biroz aylantirilgach chiqadi)
 const sticky = document.getElementById("stickyCta");
-const toggleSticky = () => sticky.classList.toggle("show", scrollY > 600);
+let overModel = false; // 3D bo'limi ko'ringanda tugma o'sha bo'limdagi "Og'izni ochish" tugmasini yopmasligi uchun yashiriladi
+const toggleSticky = () => sticky.classList.toggle("show", scrollY > 600 && !overModel);
 addEventListener("scroll", toggleSticky, { passive: true });
+const stage3d = document.querySelector(".mv__stage");
+if (stage3d) new IntersectionObserver((e) => { overModel = e[0].isIntersecting; toggleSticky(); }, { threshold: 0.2 }).observe(stage3d);
 toggleSticky();
 
 document.getElementById("yr").textContent = new Date().getFullYear();
