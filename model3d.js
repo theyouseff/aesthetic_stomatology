@@ -55,42 +55,9 @@
   if (!mv) return;
   const stage = mv.parentElement;
   const warn = document.getElementById("mvWarn");
-  const spin = document.getElementById("mvSpin");
-  const natural = document.getElementById("mvNatural");
-  const pearl = document.getElementById("mvPearl");
 
   jaw(mv, document.getElementById("mvOpen"), () => stage.classList.add("is-ready"));
 
-  document.getElementById("mvReset").onclick = () => { mv.cameraOrbit = "0deg 88deg 104%"; mv.fieldOfView = "auto"; };
-
-  let spinning = true;
-  spin.onclick = () => {
-    spinning = !spinning;
-    mv.autoRotate = spinning;
-    spin.classList.toggle("is-on", spinning);
-  };
-
-  // modelning o'z teksturalari saqlanadi, faqat emal va milk jilosi sozlanadi
-  function profile(name) {
-    if (!mv.model) return;
-    const teeth = mv.model.materials.find((m) => /teeth/i.test(m.name));
-    const gums = mv.model.materials.find((m) => /gums/i.test(m.name));
-    if (name === "pearl") {
-      teeth?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1.03, 1]);
-      teeth?.pbrMetallicRoughness.setRoughnessFactor(0.75);
-      gums?.pbrMetallicRoughness.setBaseColorFactor([1, 0.96, 0.96, 1]);
-      mv.exposure = 1.16;
-    } else {
-      teeth?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
-      teeth?.pbrMetallicRoughness.setRoughnessFactor(1);
-      gums?.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
-      mv.exposure = 1.08;
-    }
-    natural.classList.toggle("is-on", name !== "pearl");
-    pearl.classList.toggle("is-on", name === "pearl");
-  }
-  natural.onclick = () => profile("natural");
-  pearl.onclick = () => profile("pearl");
   mv.addEventListener("error", () => { warn.hidden = false; });
   mv.addEventListener("load", () => { warn.hidden = true; });
 })();
