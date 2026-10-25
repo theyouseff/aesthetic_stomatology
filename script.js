@@ -105,14 +105,7 @@ menu.addEventListener("click", (e) => {
   }
 });
 
-/* ---------- yozilish tugmalari ----------
-   Barcha [data-cta] tugmalar bitta manzilga olib boradi. Klientga topshirishda faqat shu manzilni almashtiring. */
-const BOOKING_URL = "https://hipolink.net/aestheticstomatology";
-document.querySelectorAll("[data-cta]").forEach((a) => {
-  a.href = BOOKING_URL;
-  a.target = "_blank";
-  a.rel = "noopener";
-});
+/* ---------- yozilish tugmalari: [data-cta] bosilganda anketa oynasi lead.js orqali ochiladi ---------- */
 
 // telefonda pastda doimiy "Qabulga yozilish" tugmasi (sahifa biroz aylantirilgach chiqadi)
 const sticky = document.getElementById("stickyCta");

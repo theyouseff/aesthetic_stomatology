@@ -33,7 +33,7 @@
       <a href="#portfolio">Portfolio</a>
       <a href="#faq">Savollar</a>
     </nav>
-    <a href="https://hipolink.net/aestheticstomatology" class="btn btn--sm" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    <a href="#aloqa" class="btn btn--sm" data-cta>Qabulga yozilish</a>
     <button class="burger" id="burger" aria-label="Menyu" aria-expanded="false"><span></span><span></span></button>
   </div>
 </header>
@@ -48,7 +48,7 @@
       <h1 class="reveal">Vinirlar va <em>Hollivud</em> tabassumi</h1>
       <p class="lead reveal">Og'riqsiz davolash, to'liq stomatologik xizmatlar va har bir bemorga individual yondashuv. Tabassumingizni yuzingizga mos, tabiiy ko'rinishda yaratamiz.</p>
       <div class="hero__cta reveal">
-        <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+        <a href="#aloqa" class="btn" data-cta>Qabulga yozilish</a>
         <a href="#oldin-keyin" class="btn btn--ghost">Natijalarni ko'rish</a>
       </div>
     </div>
@@ -101,7 +101,7 @@
 
     <div class="cta-strip reveal">
       <p><b>Qaysi biri sizga yaqin?</b><span>Shifokor holatingizni ko'rib chiqadi va mos reja taklif qiladi.</span></p>
-      <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+      <a href="#aloqa" class="btn" data-cta>Qabulga yozilish</a>
     </div>
   </div>
 </section>
@@ -116,7 +116,7 @@
     <div class="grid results" id="resultsGrid"></div>
     <div class="cta-strip cta-strip--dark reveal">
       <p><b>Siz ham shunday natija xohlaysizmi?</b><span>Birinchi qadam: shifokor ko'rigi va davolash rejasi.</span></p>
-      <a href="https://hipolink.net/aestheticstomatology" class="btn btn--gold" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+      <a href="#aloqa" class="btn btn--gold" data-cta>Qabulga yozilish</a>
     </div>
   </div>
 </section>
@@ -212,7 +212,7 @@
     <p class="ba__cap reveal" id="baCap"></p>
     <div class="cta-strip reveal">
       <p><b>Tabassumingizni o'zgartirishga tayyormisiz?</b><span>Qabulga yoziling, shifokor sizga mos usulni tushuntiradi.</span></p>
-      <a href="https://hipolink.net/aestheticstomatology" class="btn" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+      <a href="#aloqa" class="btn" data-cta>Qabulga yozilish</a>
     </div>
   </div>
 </section>
@@ -256,7 +256,7 @@
     <p class="eyebrow eyebrow--light">Qabulga yozilish</p>
     <h2>Tabassumingiz uchun birinchi qadamni <em>qo'ying</em></h2>
     <p class="lead lead--light">Yozilish sahifasiga o'ting va qabulga yoziling. Shifokor holatingizni ko'rib, davolash rejasini tushuntiradi.</p>
-    <a href="https://hipolink.net/aestheticstomatology" class="btn btn--gold btn--lg" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+    <a href="#aloqa" class="btn btn--gold btn--lg" data-cta>Qabulga yozilish</a>
     <ul class="cta__trust"><li>Og'riqsiz davolash</li><li>Individual yondashuv</li><li>To'liq stomatologik xizmatlar</li></ul>
   </div>
 </section>
@@ -270,11 +270,64 @@
   </div>
 </footer>
 
-<a href="https://hipolink.net/aestheticstomatology" class="sticky-cta" id="stickyCta" data-cta target="_blank" rel="noopener">Qabulga yozilish</a>
+<a href="#aloqa" class="sticky-cta" id="stickyCta" data-cta>Qabulga yozilish</a>
+
+<dialog class="modal" id="leadModal" aria-labelledby="leadTitle">
+  <button class="modal__x" type="button" aria-label="Yopish" data-close>&times;</button>
+  <form class="modal__body" id="leadForm" novalidate>
+    <p class="eyebrow">Qabulga yozilish</p>
+    <h2 id="leadTitle">Qisqa anketani to'ldiring</h2>
+    <p class="modal__sub">Ma'lumotlaringizni qoldiring, siz bilan bog'lanamiz.</p>
+
+    <label>Ismingiz *
+      <input name="name" type="text" placeholder="Ismingizni yozing" autocomplete="name" required>
+    </label>
+    <label>Telefon raqamingiz *
+      <input name="phone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __" autocomplete="tel" required>
+    </label>
+    <div class="modal__row">
+      <label>Qiziqtirgan xizmat
+        <select name="service">
+          <option>Maslahat kerak</option>
+          <option>Oqartirish</option>
+          <option>Tishlarni tekislash</option>
+          <option>Breketlar</option>
+          <option>Vinirlar</option>
+          <option>Implantatsiya</option>
+          <option>Boshqa</option>
+        </select>
+      </label>
+      <label>Qulay vaqt
+        <select name="time">
+          <option>Farqi yo'q</option>
+          <option>Ertalab</option>
+          <option>Kunduzi</option>
+          <option>Kechqurun</option>
+        </select>
+      </label>
+    </div>
+    <label>Izoh (ixtiyoriy)
+      <textarea name="note" rows="3" placeholder="Sizni nima bezovta qilyapti?"></textarea>
+    </label>
+    <input class="hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label class="modal__check"><input name="agree" type="checkbox" required> <span>Ma'lumotlarim qayta aloqa uchun ishlatilishiga roziman *</span></label>
+    <p class="modal__err" id="leadErr" role="alert"></p>
+    <button class="btn btn--lg modal__submit" type="submit" id="leadSubmit">Arizani yuborish</button>
+  </form>
+
+  <div class="modal__ok" id="leadDone" hidden>
+    <span class="modal__okic" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.500 4.500L19 7.500"/></svg></span>
+    <h2>Rahmat!</h2>
+    <p id="leadDoneText">Arizangiz qabul qilindi. Tez orada siz bilan bog'lanamiz.</p>
+    <p class="modal__demo" id="leadDemo" hidden>Demo rejim: forma hali serverga ulanmagan, ariza hech qayerga yuborilmadi.</p>
+    <button class="btn" type="button" data-close>Yopish</button>
+  </div>
+</dialog>
 
 <script src="script.js"></script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <script src="reviews.js" defer></script>
+<script src="lead.js" defer></script>
 <script src="model3d.js" defer></script>
 </body>
 </html>
