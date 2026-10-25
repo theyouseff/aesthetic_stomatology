@@ -26,11 +26,52 @@ const SAMPLE_REVIEWS = [
   const items = REVIEWS.length ? REVIEWS : demo ? SAMPLE_REVIEWS : [];
   if (!sec || !list || !items.length) return;
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  list.innerHTML = items.map((r) => `
-    <figure class="review reveal in">
-      <blockquote>${esc(r.text)}</blockquote>
-      <figcaption><b>${esc(r.name)}</b>${r.service ? `<span>${esc(r.service)}</span>` : ""}${r.date ? `<time>${esc(r.date)}</time>` : ""}</figcaption>
-    </figure>`).join("");
+  sec.hidden = false; // o'lchash uchun avval ko'rinadigan qilinadi
+  list.innerHTML = `
+    <button class="rv__nav rv__prev" type="button" aria-label="Oldingisi">${"<svg viewBox='0 0 24 24' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M15 6l-6 6 6 6'/></svg>"}</button>
+    <div class="rv__track">${items.map((r) => `
+      <figure class="review">
+        <figcaption class="review__head">
+          <span class="review__ava">${esc(String(r.name).trim().charAt(0).toUpperCase())}</span>
+          <span class="review__who"><b>${esc(r.name)}</b>${r.service || r.date ? `<small>${[r.service, r.date].filter(Boolean).map(esc).join(" · ")}</small>` : ""}</span>
+        </figcaption>
+        <blockquote class="review__text">${esc(r.text)}</blockquote>
+        <button class="review__more" type="button" hidden>Ko'proq o'qish <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      </figure>`).join("")}</div>
+    <button class="rv__nav rv__next" type="button" aria-label="Keyingisi">${"<svg viewBox='0 0 24 24' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 6l6 6-6 6'/></svg>"}</button>
+    <div class="rv__dots">${items.map((_, i) => `<button type="button" aria-label="${i + 1}-sharh" data-i="${i}"></button>`).join("")}</div>`;
+  list.className = "rv";
+
+  const track = list.querySelector(".rv__track");
+  const cards = [...track.children];
+  const dots = [...list.querySelectorAll(".rv__dots button")];
+  const prev = list.querySelector(".rv__prev"), next = list.querySelector(".rv__next");
+  const step = () => (cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth);
+
+  // uzun sharhlar qisqartiriladi: "Ko'proq o'qish" faqat matn sig'masa chiqadi
+  const fitMore = () => cards.forEach((c) => {
+    const t = c.querySelector(".review__text"), b = c.querySelector(".review__more");
+    if (c.classList.contains("is-open")) return;
+    b.hidden = !(t.scrollHeight > t.clientHeight + 1);
+  });
+  cards.forEach((c) => c.querySelector(".review__more").addEventListener("click", (e) => {
+    const open = c.classList.toggle("is-open");
+    e.currentTarget.firstChild.textContent = open ? "Yig'ish " : "Ko'proq o'qish ";
+  }));
+
+  const sync = () => {
+    const i = Math.min(cards.length - 1, Math.round(track.scrollLeft / (step() || 1)));
+    dots.forEach((d, k) => d.classList.toggle("is-on", k === i));
+    prev.disabled = track.scrollLeft <= 2;
+    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+  };
+  prev.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+  next.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+  dots.forEach((d) => d.addEventListener("click", () => track.scrollTo({ left: step() * +d.dataset.i, behavior: "smooth" })));
+  track.addEventListener("scroll", sync, { passive: true });
+  new ResizeObserver(() => { fitMore(); sync(); }).observe(track);
+  fitMore(); sync();
+
   if (!REVIEWS.length) {
     const note = document.createElement("p");
     note.className = "reviews__note";
