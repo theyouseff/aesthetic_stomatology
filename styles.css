@@ -84,8 +84,8 @@ em{font-style:italic;color:var(--gold)}
 .sub{margin-top:16px;color:var(--muted)}
 
 /* cards */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px 26px 30px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px 24px 30px;transition:transform .3s,box-shadow .3s,border-color .3s}
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--gold-l)}
 .card__ic{width:52px;height:52px;border-radius:15px;background:var(--tint);border:1px solid var(--line);color:var(--teal);display:grid;place-items:center;margin-bottom:20px;transition:.3s}
 .card:hover .card__ic{background:var(--teal);border-color:var(--teal);color:#fff}
