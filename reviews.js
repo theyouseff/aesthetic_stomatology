@@ -6,8 +6,10 @@
 const REVIEWS = [
 ];
 
-/* NAMUNA matnlar: faqat dizaynni ko'rish uchun. Ular faqat lokal ochilganda (file:// yoki localhost) yoki manzilga ?demo qo'shilganda
-   ko'rinadi, jonli saytda ko'rinmaydi. REVIEWS ga haqiqiy sharh qo'shilishi bilan ular avtomatik o'chadi. */
+/* NAMUNA matnlar (shablon/demo uchun). SHOW_SAMPLES = true bo'lsa, REVIEWS bo'sh paytda hamma joyda "NAMUNA" belgisi bilan ko'rinadi.
+   Haqiqiy klientga topshirishda: REVIEWS ga haqiqiy sharhlarni qo'shing (namunalar o'zi o'chadi) va SHOW_SAMPLES ni false qiling. */
+const SHOW_SAMPLES = true;
+
 const SAMPLE_REVIEWS = [
   { name: "Ism F.", service: "Vinirlar", date: "NAMUNA", text: "Qabulda hamma narsani oldindan tushuntirishdi, davolash jarayonida o'zimni xotirjam his qildim. Natijadan mamnunman." },
   { name: "Ism F.", service: "Tish oqartirish", date: "NAMUNA", text: "Oqartirishdan keyin tishlarim ancha ochiq rangga kirdi. Shifokor parvarish bo'yicha aniq tavsiyalar berdi." },
@@ -20,7 +22,7 @@ const SAMPLE_REVIEWS = [
 (function () {
   const sec = document.getElementById("sharhlar");
   const list = document.getElementById("reviewsList");
-  const demo = location.protocol === "file:" || ["localhost", "127.0.0.1", ""].includes(location.hostname) || /[?&]demo\b/.test(location.search);
+  const demo = SHOW_SAMPLES || location.protocol === "file:" || ["localhost", "127.0.0.1", ""].includes(location.hostname) || /[?&]demo\b/.test(location.search);
   const items = REVIEWS.length ? REVIEWS : demo ? SAMPLE_REVIEWS : [];
   if (!sec || !list || !items.length) return;
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -29,6 +31,12 @@ const SAMPLE_REVIEWS = [
       <blockquote>${esc(r.text)}</blockquote>
       <figcaption><b>${esc(r.name)}</b>${r.service ? `<span>${esc(r.service)}</span>` : ""}${r.date ? `<time>${esc(r.date)}</time>` : ""}</figcaption>
     </figure>`).join("");
+  if (!REVIEWS.length) {
+    const note = document.createElement("p");
+    note.className = "reviews__note";
+    note.textContent = "Quyidagi matnlar namuna: haqiqiy bemor sharhlari bilan almashtiriladi.";
+    list.before(note);
+  }
   sec.hidden = false;
   const nav = document.getElementById("navReviews");
   if (nav) nav.hidden = false;
