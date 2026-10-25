@@ -36,6 +36,7 @@
     let down = null;
     heroMv.addEventListener("pointerdown", (e) => (down = [e.clientX, e.clientY]));
     heroMv.addEventListener("click", (e) => {
+      if (e.detail > 1) return; // ikki marta bosish (double-click) ochish/yopishni qayta almashtirmasin
       const moved = down ? Math.hypot(e.clientX - down[0], e.clientY - down[1]) : 0;
       down = null;
       if (moved < 8) setOpen(!isOpen);
